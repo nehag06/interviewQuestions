@@ -64,7 +64,7 @@ public class FindStrings {
 			for (int j=0; j<input.length(); j++) {
 				suffixes.add(input.substring(j));
 			}
-	  }
+		}
 		ArrayList<String> sortedSuffixes = new ArrayList<>();
 		sortedSuffixes.addAll(suffixes);
 		sort(sortedSuffixes);
