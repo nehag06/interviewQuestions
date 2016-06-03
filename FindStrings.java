@@ -2,6 +2,9 @@ import java.io.*;
 import java.util.*;
 
 /**
+ **************************************************************************************************************************
+ * Problem:-
+ **************************************************************************************************************************
  * You are given n strings w1, w2, ......, wn.
  * Let Si denote the set of strings formed by considering all unique substrings of the string wi.
  * A substring is defined as a contiguous sequence of one or more characters in the string.
@@ -53,6 +56,52 @@ import java.util.*;
  * Now, S = {S1 U S2} = {"a", "aa", "aab", "aac", "ab", "ac", "b", "c"}. Totally, 8 unique strings are present in the set S. 
  * The lexicographically 3rd smallest string in S is "aab" and the lexicographically 8th smallest string in S is "c".
  * Since there are only 8 distinct substrings, the answer to the last query is "INVALID".
+ * 
+ **************************************************************************************************************************
+ * Solution:-
+ **************************************************************************************************************************
+ * Use suffix array, because every substring is a prefix of one of the suffixes.
+ * Specifically, given an example string as "abcd", suffix array would be:-
+ * abcd bcd cd d
+ * and assume you are looking for substring "bc", then you can find that by looking for all suffixes that start with "bc"
+ * (there is only one in this case, "bcd"). Since a suffix array is lexicographically sorted, finding all suffixes that 
+ * share a certain prefix corresponds to a binary search across the suffix array, and the result will be one continuous 
+ * range of entries of the suffix array.
+ *
+ * However, there are optimised search methods using the suffix array combined with auxiliary data structures,
+ * such as the LCP (longest-common prefix) array, or wavelet trees.
+ * See Navarro's 2007 survey for a description of such methods (DOI 10.1145/1216370.1216372).
+ * 
+ * To take into account the comments made below, I suggest combining each suffix with the number of substrings it
+ * represents. In a simple example like the above this would be:-
+ * 4 abcd
+ * 3 bcd
+ * 2 bc
+ * 1 d
+ * because, for example, the first suffix "abcd" represents the 4 substrings "a", "ab", "abc", "abcd".
+ * However, in a more complex example, say for the string "abcabxdabe", the first two entries of the suffix array
+ * would be:-
+ * 10 abcabxdabe
+ * 1 abe
+ * because the second entry represents substrings "a", "ab" and "abe", but "a" and "ab" are also represented
+ * by the first entry.
+ * 
+ * Number of substrings an entry represents? The length of the suffix minus the length of the longest prefix it
+ * has in common with the previous suffix. E.g. in the "abe" example, that is 3 (its length) minus 2
+ * (the length of "ab", the longest prefix it shares with the previous entry). So these numbers can be generated
+ * in one pass over the suffix array, and even faster if you have also generated the LCP (longest-common prefix) array.
+ * 
+ * The next step would be to generate accumulated counts:-
+ * 10 abcabxdabe
+ * 11 abe
+ * 16 abxdabe
+ * ...
+ * and then to find an efficient way to make use of the accumulated counts.
+ * E.g. if you want to get the 13th substring lexicographically, you'd have to find the first entry that
+ * has an accumulated count greater than or equal to 13. That would be "16 abxdabe" above.
+ * Then remove the prefix it shares with the previous entry (yields "xdabe"), and then jump to the position
+ * after the 2nd character (because the previous entry has accumulated count 11, and 13-11==2), so you get "abxd"
+ * as the 13th substring lexicographically.
 */
 public class FindStrings {
 	public static void main(String[] args) throws java.lang.Exception {
