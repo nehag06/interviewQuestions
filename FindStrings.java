@@ -55,75 +55,75 @@ import java.util.*;
  * Since there are only 8 distinct substrings, the answer to the last query is "INVALID".
 */
 public class FindStrings {
-  public static void main(String[] args) throws java.lang.Exception {
-    BufferedReader bi = new BufferedReader(new InputStreamReader(System.in));
-	  int numStrings = Integer.parseInt(bi.readLine());
-	  Set<String> suffixes = new HashSet<>();
-	  for (int i=0; i<numStrings; i++) {
-		  String input = bi.readLine();
-		  for (int j=0; j<input.length(); j++) {
-			  suffixes.add(input.substring(j));
-		  }
+	public static void main(String[] args) throws java.lang.Exception {
+		BufferedReader bi = new BufferedReader(new InputStreamReader(System.in));
+		int numStrings = Integer.parseInt(bi.readLine());
+		Set<String> suffixes = new HashSet<>();
+		for (int i=0; i<numStrings; i++) {
+			String input = bi.readLine();
+			for (int j=0; j<input.length(); j++) {
+				suffixes.add(input.substring(j));
+			}
 	  }
-	  ArrayList<String> sortedSuffixes = new ArrayList<>();
-	  sortedSuffixes.addAll(suffixes);
-	  sort(sortedSuffixes);
-	  ArrayList<Integer> commonPrefix = new ArrayList<>();
-	  commonPrefix.add(0);
-	  ArrayList<Long> totalSubStrings = new ArrayList<>();
-    totalSubStrings.add(0l);
-	  totalSubStrings.add((long) sortedSuffixes.get(0).length());
-	  for (int i=1; i<sortedSuffixes.size(); i++) {
-		  int lengthPrefix = 0;
-		  String prevString = sortedSuffixes.get(i-1);
-		  String currentString = sortedSuffixes.get(i);
-		  for (int j=0; j<prevString.length() && prevString.charAt(j) == currentString.charAt(j); j++) {
-			  lengthPrefix++;
-		  }
-		  commonPrefix.add(lengthPrefix);
+		ArrayList<String> sortedSuffixes = new ArrayList<>();
+		sortedSuffixes.addAll(suffixes);
+		sort(sortedSuffixes);
+		ArrayList<Integer> commonPrefix = new ArrayList<>();
+		commonPrefix.add(0);
+		ArrayList<Long> totalSubStrings = new ArrayList<>();
+		totalSubStrings.add(0l);
+		totalSubStrings.add((long) sortedSuffixes.get(0).length());
+		for (int i=1; i<sortedSuffixes.size(); i++) {
+			int lengthPrefix = 0;
+			String prevString = sortedSuffixes.get(i-1);
+			String currentString = sortedSuffixes.get(i);
+			for (int j=0; j<prevString.length() && prevString.charAt(j) == currentString.charAt(j); j++) {
+				lengthPrefix++;
+			}
+			commonPrefix.add(lengthPrefix);
 			totalSubStrings.add(totalSubStrings.get(i) + sortedSuffixes.get(i).length() - commonPrefix.get(i));
 		}
 		int numOutputs = Integer.parseInt(bi.readLine());
 		for (int i=0; i<numOutputs; i++) {
-		  long index = Long.parseLong(bi.readLine());
-		  if (index > totalSubStrings.get(sortedSuffixes.size())) {
-			  System.out.println("INVALID");
-		  } else {
-			  int j = 0;
-			  while (totalSubStrings.get(j) < index) {
-				  j++;
-			  }
-			  System.out.println(sortedSuffixes.get(j-1).substring(0, commonPrefix.get(j-1) + (int)(index - totalSubStrings.get(j-1))));
-		  }
-	  }
-  }
+			long index = Long.parseLong(bi.readLine());
+			if (index > totalSubStrings.get(sortedSuffixes.size())) {
+				System.out.println("INVALID");
+			} else {
+				int j = 0;
+				while (totalSubStrings.get(j) < index) {
+					j++;
+				}
+				System.out.println(sortedSuffixes.get(j-1).substring(0, commonPrefix.get(j-1) + (int)(index - totalSubStrings.get(j-1))));
+			}
+		}
+	}
 	private static <T extends Comparable<? super T>> void sort(List<T> list) {
   	quickSort(list, 0, list.size() - 1);
 	}
 	private static <T extends Comparable<? super T>> void quickSort(List<T> array, int left, int right){
-    if(left  >= right) {
-    	return;
-    }
-    int q = partition(array, left, right);
-    quickSort(array, left, q - 1);
-    quickSort(array, q + 1, right);
+		if(left  >= right) {
+			return;
+		}
+		int q = partition(array, left, right);
+		quickSort(array, left, q - 1);
+		quickSort(array, q + 1, right);
 	}
 	private static <T extends Comparable<? super T>> int partition(List<T> array, int first, int last) {
-    T key = array.get(last);
-  	int smaller = first - 1;
-  	for (int test = first; test < last; test++) {
-      if (array.get(test).compareTo(key) <= 0) {
-        smaller++;
-        exchange(smaller, test, array);
-      }
-  	}
-  	smaller++;
-  	exchange(last, smaller, array);
-  	return smaller;
+		T key = array.get(last);
+		int smaller = first - 1;
+		for (int test = first; test < last; test++) {
+			if (array.get(test).compareTo(key) <= 0) {
+				smaller++;
+				exchange(smaller, test, array);
+			}
+		}
+		smaller++;
+		exchange(last, smaller, array);
+		return smaller;
 	}
 	private static <T extends Comparable<? super T>> void exchange(int j, int i, List<T> array) {
-    	T temp = array.get(j);
-    	array.set(j, array.get(i));
-    	array.set(i, temp);
+		T temp = array.get(j);
+		array.set(j, array.get(i));
+		array.set(i, temp);
 	}
 }
