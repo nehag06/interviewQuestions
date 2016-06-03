@@ -100,7 +100,7 @@ public class FindStrings {
 		}
 	}
 	private static <T extends Comparable<? super T>> void sort(List<T> list) {
-  	quickSort(list, 0, list.size() - 1);
+		quickSort(list, 0, list.size() - 1);
 	}
 	private static <T extends Comparable<? super T>> void quickSort(List<T> array, int left, int right){
 		if(left  >= right) {
