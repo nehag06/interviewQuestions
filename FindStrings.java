@@ -93,7 +93,8 @@ public class FindStrings {
 				while (totalSubStrings.get(j) < index) {
 					j++;
 				}
-				System.out.println(sortedSuffixes.get(j-1).substring(0, commonPrefix.get(j-1) + (int)(index - totalSubStrings.get(j-1))));
+				System.out.println(
+					sortedSuffixes.get(j-1).substring(0, commonPrefix.get(j-1) + (int)(index - totalSubStrings.get(j-1))));
 			}
 		}
 	}
