@@ -94,7 +94,8 @@ public class FindStrings {
 					j++;
 				}
 				System.out.println(
-					sortedSuffixes.get(j-1).substring(0, commonPrefix.get(j-1) + (int)(index - totalSubStrings.get(j-1))));
+					sortedSuffixes.get(j-1).substring(0, commonPrefix.get(j-1)
+					+ (int)(index - totalSubStrings.get(j-1))));
 			}
 		}
 	}
