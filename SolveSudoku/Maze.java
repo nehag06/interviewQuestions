@@ -63,10 +63,10 @@ class Maze
             boolean[] rowNum = boolMarkerArr();
             for (int col = 0; col < mazeLength; col++) {
                 if (maze[row][col].isSolved()) {
-                    if (rowNum[maze[row][col].getValue()]) {
+                    if (rowNum[maze[row][col].getValue() - 1]) {
                         return true;
                     } else {
-                        rowNum[maze[row][col].getValue()] = true;
+                        rowNum[maze[row][col].getValue() - 1] = true;
                     }
                 }
             }
@@ -75,10 +75,10 @@ class Maze
             boolean[] colNum = boolMarkerArr();
             for (int row = 0; row < mazeLength; row++) {
                 if (maze[row][col].isSolved()) {
-                    if (colNum[maze[row][col].getValue()]) {
+                    if (colNum[maze[row][col].getValue() - 1]) {
                         return true;
                     } else {
-                        colNum[maze[row][col].getValue()] = true;
+                        colNum[maze[row][col].getValue() - 1] = true;
                     }
                 }
             }
@@ -95,10 +95,10 @@ class Maze
                         col < (colGrid + 1) * getCol();
                         col++) {
                         if (maze[row][col].isSolved()) {
-                            if (gridNum[maze[row][col].getValue()]) {
+                            if (gridNum[maze[row][col].getValue() - 1]) {
                                 return true;
                             } else {
-                                gridNum[maze[row][col].getValue()] = true;
+                                gridNum[maze[row][col].getValue() - 1] = true;
                             }
                         }
                     }
@@ -170,7 +170,8 @@ class Maze
         char[] spaceChars = new char[Main.lenSize + 1];
         Arrays.fill(spaceChars, ' ');
         String spaces = new String(spaceChars);
-        char[] dashChars = new char[(mazeLength + Main.col) * 2 + 1];
+        char[] dashChars = new char[(mazeLength * (Main.lenSize + 1)) +
+            (Main.row * 2) + 1];
         Arrays.fill(dashChars, '-');
         String dashes = new String(dashChars);
         System.out.println("\nMaze: ");

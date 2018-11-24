@@ -299,8 +299,8 @@ class SolveSudoku {
             maze.getMazeCell(index, colIndex)
                 .getPotentialValues().remove(uniqueNum);
         }
-        int rowGrid = rowIndex / maze.getCol();
-        int colGrid = colIndex / maze.getRow();
+        int rowGrid = rowIndex / maze.getRow();
+        int colGrid = colIndex / maze.getCol();
         for (
             int row = rowGrid * maze.getRow();
             row < (rowGrid + 1) * maze.getRow();
