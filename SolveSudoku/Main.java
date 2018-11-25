@@ -1,4 +1,5 @@
 /******************************************************************************
+This programs solves any given sudoku.
 
  row: Total number of rows in sub-grid
  col: Total number of cols in sub-grid
