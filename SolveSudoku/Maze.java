@@ -8,6 +8,7 @@ class Maze
 
     private int row;
     private int col;
+    private int lenSize;
     private int mazeLength;
     private int countSolvedSinceLastPrint;
     private MazeCell[][] maze;
@@ -17,6 +18,7 @@ class Maze
         this.col = col;
         mazeLength = this.row * this.col;
         maze = new MazeCell[mazeLength][mazeLength];
+        lenSize = String.valueOf(row * col).length();
     }
 
     public boolean isSolved() {
@@ -167,11 +169,11 @@ class Maze
         String BLUE = (char)27 + "[34m";
         String WHITE = (char)27 + "[37m";
         int currentSolved = 0;
-        char[] spaceChars = new char[Main.lenSize + 1];
+        char[] spaceChars = new char[lenSize + 1];
         Arrays.fill(spaceChars, ' ');
         String spaces = new String(spaceChars);
-        char[] dashChars = new char[(mazeLength * (Main.lenSize + 1)) +
-            (Main.row * 2) + 1];
+        char[] dashChars = new char[(mazeLength * (lenSize + 1)) +
+            (row * 2) + 1];
         Arrays.fill(dashChars, '-');
         String dashes = new String(dashChars);
         System.out.println("\nMaze: ");
@@ -187,15 +189,14 @@ class Maze
                     currentSolved++;
                     String color = maze[i][j].isInitial() ? BLUE : YELLOW;
                     System.out.print(color + String.format("% " + 
-                        (Main.lenSize + 1) + "d", maze[i][j].getValue()) +
-                        WHITE);
+                        (lenSize + 1) + "d", maze[i][j].getValue()) + WHITE);
                 }
-                if ((j+1) % Main.col == 0) {
+                if ((j+1) % col == 0) {
                     System.out.print(RED + " |" + WHITE);
                 }
             }
             System.out.println("");
-            if ((i+1) % Main.row == 0) {
+            if ((i+1) % row == 0) {
                 System.out.println(RED + dashes + WHITE);
             }
         }
