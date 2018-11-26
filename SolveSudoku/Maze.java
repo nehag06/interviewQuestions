@@ -1,4 +1,7 @@
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 class Maze
@@ -6,10 +9,14 @@ class Maze
     public static final String delimiter = ",";
     public static final int unknown = 0;
 
-    private int row;
-    private int col;
+    public final List<List<MazeCell>> rows;
+    public final List<List<MazeCell>> cols;
+    public final List<List<MazeCell>> grids;
+    public final int row;
+    public final int col;
+    public final int mazeLength;
+
     private int lenSize;
-    private int mazeLength;
     private int countSolvedSinceLastPrint;
     private MazeCell[][] maze;
 
@@ -19,32 +26,56 @@ class Maze
         mazeLength = this.row * this.col;
         maze = new MazeCell[mazeLength][mazeLength];
         lenSize = String.valueOf(row * col).length();
+        takeInput();
+        List<List<MazeCell>> mazeByRow = new ArrayList<>();
+        for (int i = 0; i < mazeLength; i++) {
+            List<MazeCell> rowCells = new ArrayList<>();
+            for (int j = 0; j < mazeLength; j++) {
+                rowCells.add(maze[i][j]);
+            }
+            mazeByRow.add(Collections.unmodifiableList(rowCells));
+        }
+        rows = Collections.unmodifiableList(mazeByRow);
+        List<List<MazeCell>> mazeByCol = new ArrayList<>();
+        for (int i = 0; i < mazeLength; i++) {
+            List<MazeCell> colCells = new ArrayList<>();
+            for (int j = 0; j < mazeLength; j++) {
+                colCells.add(maze[j][i]);
+            }
+            mazeByCol.add(Collections.unmodifiableList(colCells));
+        }
+        cols = Collections.unmodifiableList(mazeByCol);
+        List<List<MazeCell>> mazeByGrid = new ArrayList<>();
+        for (int rowIndex = 0; rowIndex < col; rowIndex++) {
+            for (int colIndex = 0; colIndex < row; colIndex++) {
+                List<MazeCell> gridCells = new ArrayList<>();
+                for (int i = rowIndex * row; i < (rowIndex + 1) * row; i++) {
+                    for (
+                        int j = colIndex * col;
+                        j < (colIndex + 1) * col;
+                        j++) {
+                        gridCells.add(maze[i][j]);
+                    }
+                }
+                mazeByGrid.add(Collections.unmodifiableList(gridCells));
+            }
+        }
+        grids = Collections.unmodifiableList(mazeByGrid);
+    }
+    
+    MazeCell get(int row, int col) {
+        return maze[row][col];
     }
 
     public boolean isSolved() {
-        boolean solved = true;
-        for (int i = 0; i < mazeLength; i++) {
-            for (int j = 0; j < mazeLength; j++) {
-                solved = maze[i][j].isSolved() && solved;
+        for (MazeCell[] cells: maze) {
+            for (MazeCell cell: cells) {
+                if (!cell.isSolved()) {
+                    return false;
+                }
             }
         }
-        return solved;
-    }
-
-    public MazeCell getMazeCell(int rowNum, int colNum) {
-        return maze[rowNum][colNum];
-    }
-
-    public int getMazeLength() {
-        return mazeLength;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public int getCol() {
-        return col;
+        return true;
     }
 
     private boolean[] boolMarkerArr() {
@@ -61,47 +92,16 @@ class Maze
                 }
             }
         }
-        for (int row = 0; row < mazeLength; row++) {
-            boolean[] rowNum = boolMarkerArr();
-            for (int col = 0; col < mazeLength; col++) {
-                if (maze[row][col].isSolved()) {
-                    if (rowNum[maze[row][col].getValue() - 1]) {
-                        return true;
-                    } else {
-                        rowNum[maze[row][col].getValue() - 1] = true;
-                    }
-                }
-            }
-        }
-        for (int col = 0; col < mazeLength; col++) {
-            boolean[] colNum = boolMarkerArr();
-            for (int row = 0; row < mazeLength; row++) {
-                if (maze[row][col].isSolved()) {
-                    if (colNum[maze[row][col].getValue() - 1]) {
-                        return true;
-                    } else {
-                        colNum[maze[row][col].getValue() - 1] = true;
-                    }
-                }
-            }
-        }
-        for (int rowGrid = 0; rowGrid < getCol(); rowGrid++) {
-            for (int colGrid = 0; colGrid < getRow(); colGrid++) {
-                boolean[] gridNum = boolMarkerArr();
-                for (
-                    int row = rowGrid * getRow();
-                    row < (rowGrid + 1) * getRow();
-                    row++) {
-                    for (
-                        int col = colGrid * getCol();
-                        col < (colGrid + 1) * getCol();
-                        col++) {
-                        if (maze[row][col].isSolved()) {
-                            if (gridNum[maze[row][col].getValue() - 1]) {
-                                return true;
-                            } else {
-                                gridNum[maze[row][col].getValue() - 1] = true;
-                            }
+        for (List<List<MazeCell>> lists : Arrays.asList(rows, cols, grids)) {
+            for (List<MazeCell> list : rows) {
+                boolean[] markers = new boolean[mazeLength + 1];
+                Arrays.fill(markers, false);
+                for (MazeCell cell : list) {
+                    if (cell.isSolved()) {
+                        if (markers[cell.getValue() - 1]) {
+                            return true;
+                        } else {
+                            markers[cell.getValue() - 1] = true;
                         }
                     }
                 }
@@ -110,7 +110,7 @@ class Maze
         return false;
     }
 
-    public void takeInput() {
+    private void takeInput() {
         Scanner input = new Scanner(System.in);
         boolean valid = false;
         while(!valid) {
@@ -144,7 +144,7 @@ class Maze
                                 "input at row: " + row + " column: " + col + 
                                 " is: " + inputStr[j]);
                         }
-                        maze[i][j] = new MazeCell(value, this);
+                        maze[i][j] = new MazeCell(value, i, j, mazeLength);
                         if (maze[i][j].isSolved()) {
                             countSolvedSinceLastPrint++;
                         }
@@ -210,10 +210,10 @@ class Maze
                             (j + 1) + " Values:");
                         for (
                             int k = 0;
-                            k < maze[i][j].getPotentialValues().size();
+                            k < maze[i][j].potentialValues.size();
                             k++) {
                             System.out.print(" " + 
-                                maze[i][j].getPotentialValues().get(k));
+                                maze[i][j].potentialValues.get(k));
                         }
                         System.out.println("");
                     }

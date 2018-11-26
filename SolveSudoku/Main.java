@@ -20,8 +20,6 @@ public final class Main {
         System.out.println("Enter the number of cols in sub-grid: ");
         int col = input.nextInt();
         Maze maze = new Maze(row, col);
-        maze.takeInput();
         SolveSudoku.solve(maze);
     }
 }
-
